@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header">
+    <nav>
+        <a class="brand" href="/">
+            <img src="/images/logo.png" alt="EduLab"/>
+            EduLab
+        </a>
+        <div class="nav-links">
+            <a href="/">Início</a>
+            <a href="/courses">Cursos</a>
+            <a href="/about">Sobre</a>
+            <span sec:authorize="isAuthenticated()" class="user-pill">
+                👤 <span sec:authentication="name"></span>
+            </span>
+            <a sec:authorize="isAuthenticated()" href="/dashboard">Minha Área</a>
+            <a sec:authorize="hasRole('ADMIN')" href="/admin">Admin</a>
+            <a sec:authorize="isAuthenticated()" href="/logout">Sair</a>
+            <a sec:authorize="!isAuthenticated()" href="/register">Cadastro</a>
+            <a sec:authorize="!isAuthenticated()" href="/login" class="btn-nav">Login</a>
+        </div>
+    </nav>
+</header>
+</body>
+</html>

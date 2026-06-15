@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Aulas — Admin EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <a href="/admin" style="color:var(--gray);font-size:0.9rem">← Voltar ao painel</a>
+        <div class="page-header" style="margin-top:16px">
+            <h1>Aulas — <span th:text="${course.title}"></span></h1>
+        </div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div class="grid grid-2" style="gap:32px">
+            <div>
+                <h3>Aulas cadastradas</h3>
+                <div th:if="${#lists.isEmpty(course.lessons)}" class="empty-state" style="padding:32px 0"><p>Nenhuma aula ainda.</p></div>
+                <div th:each="lesson,i : ${course.lessons}" class="card" style="margin-bottom:12px;padding:16px 20px">
+                    <strong th:text="'Aula ' + (${i.index}+1) + ': ' + ${lesson.title}"></strong>
+                    <p style="margin:6px 0 0;font-size:0.9rem;color:var(--gray)" th:text="${lesson.content}"></p>
+                </div>
+            </div>
+            <div>
+                <div class="form-card" style="margin:0">
+                    <div class="form-title" style="font-size:1.2rem">Adicionar aula</div>
+                    <form th:action="@{'/admin/courses/' + ${course.id} + '/lessons'}" th:object="${lessonRequest}" method="post">
+                        <div class="form-group">
+                            <label>Título da aula</label>
+                            <input type="text" th:field="*{title}" placeholder="Ex: Introdução ao Java"/>
+                            <div class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Conteúdo / descrição</label>
+                            <textarea th:field="*{content}" rows="4" placeholder="Descreva o que será ensinado"></textarea>
+                            <div class="field-error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Adicionar aula</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

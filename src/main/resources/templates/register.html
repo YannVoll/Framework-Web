@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cadastro — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section" style="display:flex;align-items:center;justify-content:center">
+        <div class="form-card" style="width:100%">
+            <div class="form-title">Criar conta</div>
+            <p class="form-subtitle">É grátis e leva menos de 1 minuto</p>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <form th:action="@{/register}" th:object="${userRequest}" method="post">
+                <div class="form-group">
+                    <label>Nome completo</label>
+                    <input type="text" th:field="*{name}" placeholder="Seu nome"/>
+                    <div class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" th:field="*{email}" placeholder="seu@email.com"/>
+                    <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" th:field="*{password}" placeholder="Mínimo 6 caracteres"/>
+                    <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Criar conta</button>
+            </form>
+            <hr class="divider"/>
+            <p style="text-align:center;margin:0;font-size:0.92rem">Já tem conta? <a href="/login">Entrar</a></p>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

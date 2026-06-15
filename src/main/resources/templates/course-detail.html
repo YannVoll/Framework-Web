@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${course.title} + ' — EduLab'">Curso</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <style>
+        .payment-options { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+        .payment-option {
+            display: flex; align-items: center; gap: 12px;
+            border: 2px solid #e5e7eb; border-radius: 12px;
+            padding: 13px 16px; cursor: pointer; transition: all .15s;
+        }
+        .payment-option:hover { border-color: var(--blue); background: #f8faff; }
+        .payment-option.selected { border-color: var(--blue); background: #eef4ff; box-shadow: 0 0 0 3px rgba(15,98,254,.1); }
+        .payment-option input { width: auto; margin: 0; accent-color: var(--blue); }
+        .payment-icon { font-size: 1.5rem; line-height: 1; }
+        .payment-text { flex: 1; }
+        .payment-label { display: block; font-weight: 600; font-size: .95rem; }
+        .payment-desc { display: block; font-size: .8rem; color: var(--gray); }
+    </style>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <a href="/courses" style="color:var(--gray);font-size:0.9rem">← Voltar para cursos</a>
+        <div style="display:grid;gap:32px;margin-top:24px" class="grid grid-2">
+            <div>
+                <img th:src="${course.imageUrl}" style="width:100%;border-radius:var(--radius);margin-bottom:20px"/>
+                <span class="badge badge-blue" th:text="${course.instructor}"></span>
+                <h1 style="margin:12px 0 8px" th:text="${course.title}">Título</h1>
+                <p style="color:var(--gray)" th:text="${course.description}">Descrição</p>
+
+                <h3 style="margin-top:32px">📋 Conteúdo do curso</h3>
+                <div th:if="${#lists.isEmpty(course.lessons)}" style="color:var(--gray)">Nenhuma aula cadastrada ainda.</div>
+                <div th:each="lesson,i : ${course.lessons}" class="card" style="margin-bottom:12px;padding:16px 20px">
+                    <strong th:text="'Aula ' + (${i.index}+1) + ': ' + ${lesson.title}"></strong>
+                    <p style="margin:6px 0 0;font-size:0.9rem;color:var(--gray)" th:text="${lesson.content}"></p>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="position:sticky;top:90px">
+                    <div class="price" style="font-size:1.8rem">R$ <span th:text="${#numbers.formatDecimal(course.price,1,'COMMA',2,'POINT')}"></span></div>
+                    <hr class="divider"/>
+
+                    <!-- Não logado -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <p style="color:var(--gray);font-size:0.92rem">Faça login para se matricular neste curso.</p>
+                        <a href="/login" class="btn btn-primary" style="width:100%;text-align:center">Entrar para matricular</a>
+                    </div>
+
+                    <!-- Logado -->
+                    <div sec:authorize="isAuthenticated()">
+                        <!-- Já matriculado -->
+                        <div th:if="${alreadyEnrolled}">
+                            <div class="alert alert-success" style="margin-bottom:12px">✅ Você já está matriculado neste curso!</div>
+                            <p style="font-size:0.88rem;color:var(--gray);margin:0" th:if="${enrollment != null}">
+                                💳 Forma de pagamento: <strong th:text="${enrollment.paymentMethod}"></strong>
+                            </p>
+                            <a href="/dashboard" class="btn btn-outline" style="width:100%;margin-top:12px;text-align:center">Ir para Minha Área</a>
+                        </div>
+
+                        <!-- Não matriculado: escolher pagamento -->
+                        <div th:if="${!alreadyEnrolled}">
+                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                            <p style="font-weight:600;margin:0 0 4px">Escolha a forma de pagamento:</p>
+                            <form th:action="@{'/enroll/' + ${course.id}}" method="post" id="enrollForm">
+                                <div class="payment-options">
+                                    <label class="payment-option">
+                                        <input type="radio" name="paymentMethod" value="PIX" required/>
+                                        <span class="payment-icon">⚡</span>
+                                        <span class="payment-text">
+                                            <span class="payment-label">PIX</span>
+                                            <span class="payment-desc">Aprovação imediata</span>
+                                        </span>
+                                    </label>
+                                    <label class="payment-option">
+                                        <input type="radio" name="paymentMethod" value="Cartão de Crédito"/>
+                                        <span class="payment-icon">💳</span>
+                                        <span class="payment-text">
+                                            <span class="payment-label">Cartão de Crédito</span>
+                                            <span class="payment-desc">Em até 12x sem juros</span>
+                                        </span>
+                                    </label>
+                                    <label class="payment-option">
+                                        <input type="radio" name="paymentMethod" value="Boleto"/>
+                                        <span class="payment-icon">📄</span>
+                                        <span class="payment-text">
+                                            <span class="payment-label">Boleto Bancário</span>
+                                            <span class="payment-desc">Vencimento em 3 dias</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:16px">🎓 Confirmar matrícula</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <hr class="divider"/>
+                    <p style="font-size:0.88rem;color:var(--gray);margin:0">
+                        👤 Instrutor: <strong th:text="${course.instructor}"></strong><br/>
+                        📚 Aulas: <strong th:text="${course.lessons.size()}"></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+<script>
+// Destacar visualmente a opção de pagamento selecionada
+document.querySelectorAll('.payment-option input').forEach(function(input) {
+    input.addEventListener('change', function() {
+        document.querySelectorAll('.payment-option').forEach(function(opt) {
+            opt.classList.remove('selected');
+        });
+        if (input.checked) input.closest('.payment-option').classList.add('selected');
+    });
+});
+</script>
+</body>
+</html>

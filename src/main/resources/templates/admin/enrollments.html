@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Alunos matriculados — Admin EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <a href="/admin" style="color:var(--gray);font-size:0.9rem">← Voltar ao painel</a>
+        <div class="page-header" style="margin-top:16px">
+            <h1>Alunos — <span th:text="${course.title}"></span></h1>
+            <p><span th:text="${enrollments.size()}"></span> matrícula(s)</p>
+        </div>
+        <div class="card" style="padding:0">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Aluno</th><th>E-mail</th><th>Data</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr th:each="e : ${enrollments}">
+                            <td th:text="${e.user.name}"></td>
+                            <td th:text="${e.user.email}"></td>
+                            <td th:text="${#temporals.format(e.enrolledAt,'dd/MM/yyyy')}"></td>
+                            <td><span class="badge" th:classappend="${e.status == 'ACTIVE'} ? 'badge-green' : 'badge-gray'" th:text="${e.status}"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:if="${#lists.isEmpty(enrollments)}" class="empty-state"><p>Nenhum aluno matriculado ainda.</p></div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

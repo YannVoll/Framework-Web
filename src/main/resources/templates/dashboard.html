@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Minha Área — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+    <style>
+        .course-card { background: white; border-radius: 16px; box-shadow: 0 4px 24px rgba(15,23,42,.08); overflow: hidden; margin-bottom: 24px; }
+        .course-card-header { display: flex; gap: 20px; padding: 24px; align-items: flex-start; flex-wrap: wrap; }
+        .course-card-img { width: 120px; height: 80px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
+        .course-card-info { flex: 1; min-width: 200px; }
+        .course-card-info h3 { margin: 0 0 4px; font-size: 1.1rem; }
+        .course-card-info p { margin: 0 0 10px; color: var(--gray); font-size: 0.88rem; }
+        .lesson-item { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid #f5f5f5; font-size: 0.92rem; }
+        .lesson-item:last-child { border-bottom: none; }
+        .lesson-num { width: 28px; height: 28px; background: #eef2ff; color: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+        .lesson-info strong { display: block; }
+        .lesson-info span { color: var(--gray); font-size: 0.85rem; }
+        .lessons-toggle { background: none; border: none; color: var(--blue); font-size: 0.88rem; font-weight: 600; cursor: pointer; padding: 14px 24px; display: block; width: 100%; text-align: left; border-top: 1px solid #f0f0f0; }
+        .lessons-toggle:hover { background: #fafafa; }
+        .lessons-body { display: none; }
+        .lessons-body.open { display: block; }
+    </style>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <div class="page-header">
+            <h1>Olá, <span th:text="${user.name}">Aluno</span>! 👋</h1>
+            <p>Acompanhe seus cursos e progresso</p>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${enrollments.size()}">0</div>
+                <div class="stat-label">Cursos matriculados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${totalLessons}">0</div>
+                <div class="stat-label">Aulas disponíveis</div>
+            </div>
+        </div>
+
+        <h2 style="margin-bottom:16px">Meus cursos</h2>
+
+        <div th:if="${#lists.isEmpty(enrollments)}" class="empty-state">
+            <h3>Você ainda não está matriculado em nenhum curso</h3>
+            <a href="/courses" class="btn btn-primary" style="margin-top:16px">Ver cursos disponíveis</a>
+        </div>
+
+        <div th:each="enrollment,i : ${enrollments}" class="course-card">
+            <div class="course-card-header">
+                <img class="course-card-img" th:src="${enrollment.course.imageUrl}" alt="Curso"/>
+                <div class="course-card-info">
+                    <h3 th:text="${enrollment.course.title}"></h3>
+                    <p>👤 <span th:text="${enrollment.course.instructor}"></span></p>
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                        <span class="badge badge-green">Matriculado</span>
+                        <span class="badge badge-gray">📚 <span th:text="${enrollment.course.lessons.size()}"></span> aulas</span>
+                        <span class="badge badge-blue">💳 <span th:text="${enrollment.paymentMethod}"></span></span>
+                    </div>
+                </div>
+                <a th:href="@{'/courses/' + ${enrollment.course.id}}" class="btn btn-outline btn-sm">Ver curso</a>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(enrollment.course.lessons)}">
+                <button type="button" class="lessons-toggle" th:attr="data-target='lessons-' + ${i.index}">
+                    📋 Ver aulas do curso ▾
+                </button>
+                <div class="lessons-body" th:id="'lessons-' + ${i.index}">
+                    <div class="lesson-item" th:each="lesson,li : ${enrollment.course.lessons}">
+                        <div class="lesson-num" th:text="${li.index + 1}">1</div>
+                        <div class="lesson-info">
+                            <strong th:text="${lesson.title}"></strong>
+                            <span th:text="${lesson.content}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+<script>
+document.querySelectorAll('.lessons-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var el = document.getElementById(btn.getAttribute('data-target'));
+        el.classList.toggle('open');
+        btn.textContent = el.classList.contains('open')
+            ? '📋 Esconder aulas ▴'
+            : '📋 Ver aulas do curso ▾';
+    });
+});
+</script>
+</body>
+</html>

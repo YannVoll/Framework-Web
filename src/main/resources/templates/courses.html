@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cursos — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <div class="page-header">
+            <h1>Todos os cursos</h1>
+            <p>Encontre o curso ideal para sua carreira</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="card" th:each="course : ${courses}">
+                <img class="card-img" th:src="${course.imageUrl}" alt="Imagem"/>
+                <span class="badge badge-blue" style="margin-bottom:10px" th:text="${course.instructor}"></span>
+                <h3 th:text="${course.title}">Título</h3>
+                <p th:text="${course.description}">Descrição</p>
+                <div class="card-footer">
+                    <span class="price">R$ <span th:text="${#numbers.formatDecimal(course.price,1,'COMMA',2,'POINT')}"></span></span>
+                    <a class="btn btn-primary btn-sm" th:href="@{'/courses/' + ${course.id}}">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+        <div th:if="${#lists.isEmpty(courses)}" class="empty-state">
+            <h3>Nenhum curso disponível no momento</h3>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

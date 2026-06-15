@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section" style="display:flex;align-items:center;justify-content:center">
+        <div class="form-card" style="width:100%">
+            <div style="text-align:center;margin-bottom:28px">
+                <div class="form-title">Entrar na EduLab</div>
+                <p class="form-subtitle">Acesse seus cursos e continue aprendendo</p>
+            </div>
+            <div th:if="${param.error}" class="alert alert-danger">E-mail ou senha incorretos. Tente novamente.</div>
+            <div th:if="${param.logout}" class="alert alert-success">Logout realizado com sucesso.</div>
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">E-mail</label>
+                    <input type="email" id="username" name="username" placeholder="seu@email.com" required/>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required/>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Entrar</button>
+            </form>
+            <hr class="divider"/>
+            <p style="text-align:center;margin:0;font-size:0.92rem">Não tem conta? <a href="/register">Cadastre-se grátis</a></p>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

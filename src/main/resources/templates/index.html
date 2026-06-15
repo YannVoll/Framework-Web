@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>EduLab - Plataforma de Cursos Online</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <section class="hero">
+        <div class="hero-inner">
+            <div>
+                <span class="badge badge-blue" style="background:rgba(255,255,255,0.15);color:white">🎓 Aprendizado Online</span>
+                <h1>Aprenda com os melhores instrutores do mercado</h1>
+                <p>Cursos práticos de programação, web e tecnologia para impulsionar sua carreira.</p>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                    <a href="/courses" class="btn btn-white btn-pill">Ver todos os cursos</a>
+                    <a sec:authorize="!isAuthenticated()" href="/register" class="btn btn-pill" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3)">Cadastre-se grátis</a>
+                </div>
+            </div>
+            <div class="hero-card">
+                <h3>🚀 Inicie hoje mesmo</h3>
+                <p>Cadastre-se e acesse cursos que vão transformar sua carreira.</p>
+                <div style="margin-top:8px;font-size:0.9rem;opacity:0.85">
+                    ✅ Professores experientes<br>
+                    ✅ Conteúdo atualizado<br>
+                    ✅ Suporte completo
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section">
+        <div class="section-title">
+            <h2>Cursos em Destaque</h2>
+            <p>Escolha seu próximo passo na carreira</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="card" th:each="course : ${courses}">
+                <img class="card-img" th:src="${course.imageUrl}" alt="Imagem do curso"/>
+                <span class="badge badge-blue" style="margin-bottom:10px" th:text="${course.instructor}">Instrutor</span>
+                <h3 th:text="${course.title}">Curso</h3>
+                <p th:text="${course.description}">Descrição</p>
+                <div class="card-footer">
+                    <span class="price">R$ <span th:text="${#numbers.formatDecimal(course.price,1,'COMMA',2,'POINT')}">0,00</span></span>
+                    <a class="btn btn-primary btn-sm" th:href="@{'/courses/' + ${course.id}}">Ver detalhes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section style="background:#eef2ff;padding:64px 0">
+        <div class="section">
+            <div class="section-title"><h2>Por que escolher a EduLab?</h2></div>
+            <div class="grid grid-3">
+                <div class="card"><h3>📚 Conteúdo atualizado</h3><p>Cursos com as habilidades mais procuradas pelo mercado de tecnologia.</p></div>
+                <div class="card"><h3>💻 Aulas práticas</h3><p>Exercícios reais e projetos do início ao fim para acelerar seu aprendizado.</p></div>
+                <div class="card"><h3>🤝 Suporte completo</h3><p>Acesso direto ao time de tutoria e comunidade de alunos.</p></div>
+            </div>
+        </div>
+    </section>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

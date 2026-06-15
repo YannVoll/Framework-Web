@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sobre — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <div class="page-header">
+            <h1>Sobre a EduLab</h1>
+            <p>Nossa missão é democratizar o aprendizado em tecnologia</p>
+        </div>
+        <div class="grid grid-2">
+            <div class="card"><h3>🎯 Nossa Missão</h3><p>Oferecer educação de qualidade em tecnologia para todos, com conteúdo prático e atualizado.</p></div>
+            <div class="card"><h3>👥 Nossa Equipe</h3><p>Formada por desenvolvedores e educadores apaixonados por tecnologia e ensino.</p></div>
+            <div class="card"><h3>🚀 Nossa Tecnologia</h3><p>Plataforma construída com Java 17, Spring Boot 3, Thymeleaf, PostgreSQL e Docker.</p></div>
+            <div class="card"><h3>📈 Nosso Crescimento</h3><p>Já ajudamos centenas de alunos a darem o próximo passo na carreira em tecnologia.</p></div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>

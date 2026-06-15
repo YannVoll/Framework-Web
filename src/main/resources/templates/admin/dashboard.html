@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin — EduLab</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<body>
+<div th:insert="~{fragments/header :: header}"></div>
+<div class="page-wrapper">
+    <div class="section">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+            <div>
+                <h1>Painel Administrativo</h1>
+                <p>Gerencie cursos, aulas e alunos</p>
+            </div>
+            <a href="/admin/courses/new" class="btn btn-primary">+ Novo Curso</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number" th:text="${courses.size()}">0</div><div class="stat-label">Cursos</div></div>
+            <div class="stat-card"><div class="stat-number" th:text="${users.size()}">0</div><div class="stat-label">Usuários</div></div>
+            <div class="stat-card"><div class="stat-number" th:text="${enrollments.size()}">0</div><div class="stat-label">Matrículas</div></div>
+        </div>
+
+        <h2>Cursos</h2>
+        <div class="card" style="padding:0">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Título</th><th>Instrutor</th><th>Preço</th><th>Aulas</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="course : ${courses}">
+                            <td th:text="${course.title}"></td>
+                            <td th:text="${course.instructor}"></td>
+                            <td>R$ <span th:text="${#numbers.formatDecimal(course.price,1,'COMMA',2,'POINT')}"></span></td>
+                            <td th:text="${course.lessons.size()}"></td>
+                            <td>
+                                <div class="actions-row">
+                                    <a class="btn btn-outline btn-sm" th:href="@{'/admin/courses/' + ${course.id} + '/edit'}">Editar</a>
+                                    <a class="btn btn-outline btn-sm" th:href="@{'/admin/courses/' + ${course.id} + '/lessons'}">Aulas</a>
+                                    <a class="btn btn-outline btn-sm" th:href="@{'/admin/courses/' + ${course.id} + '/enrollments'}">Alunos</a>
+                                    <form th:action="@{'/admin/courses/' + ${course.id} + '/delete'}" method="post" style="display:inline" onsubmit="return confirm('Remover este curso?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h2 style="margin-top:40px">Usuários</h2>
+        <div class="card" style="padding:0">
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Cadastro</th></tr></thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.name}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td><span class="badge" th:classappend="${user.role == 'ADMIN'} ? 'badge-blue' : 'badge-gray'" th:text="${user.role}"></span></td>
+                            <td th:text="${#temporals.format(user.createdAt,'dd/MM/yyyy')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:insert="~{fragments/footer :: footer}"></div>
+</body>
+</html>
